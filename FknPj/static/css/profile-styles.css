@@ -1,0 +1,180 @@
+
+.profile {
+  width: 100%;
+  height: 390px;
+  padding-right: 0;
+  padding-left: 0;
+  margin: 0;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.profile .view-more {
+  position: absolute;
+  top: calc(50% - .5em);
+  left: calc(50% - .5em);
+  z-index: 2;
+  color: #2ECC71;
+  font-size: 2em;
+}
+.profile .view-more .fa-plus-circle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  width: 1.004em;
+}
+.profile .view-more .fa-plus-circle:hover {
+  background: #2ECC71;
+  color: white;
+}
+.profile .popup {
+  height: 500px;
+  width: 500px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.profile .mid-section {
+  position: absolute;
+  height: 200px;
+  width: 100%;
+  top: 180px;
+  left: 0;
+  padding: 10px 20px 0;
+  box-sizing: border-box;
+  background: white;
+}
+.profile .mid-section .name {
+  color: #333333;
+  font-size: 1.4em;
+  padding-top: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+}
+.profile .mid-section .description {
+  color: gray;
+  font-size: 0.9em;
+  padding-bottom: 10px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.profile .mid-section .description a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: bold;
+}
+.profile .mid-section .line {
+  background: #4144ee;
+  width: 80%;
+  height: 2px;
+  margin: 5px auto -3px;
+}
+.profile .mid-section .stats {
+  display: flex;
+  position: absolute;
+  left: 10%;
+  padding-top: 10px;
+  width: 80%;
+  justify-content: space-around;
+}
+.profile .mid-section .stats .stat {
+  font-size: 1.3em;
+  color: #333333;
+  padding: 5px;
+  font-weight: bold;
+}
+.profile .mid-section .stats .subtext {
+  color: gray;
+  font-size: 0.6em;
+  font-weight: normal;
+}
+.profile .img {
+  height: 130px;
+  width: 100%;
+  background-image: linear-gradient(rgba(0, 23, 153, 0.4), rgb(49, 50, 109)), url("https://static.pexels.com/photos/21014/pexels-photo-medium.jpg");  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+.profile .img img {
+  width: 160px;
+  height: 160px;
+  padding: 3px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  position: absolute;
+  left: calc(50% - 84px);
+  top: 26px;
+}
+.profile .img:after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  left: calc(50% - 91.5px);
+  top: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+}
+.profile .img:before {
+  content: "";
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  left: calc(50% - 95px);
+  top: 15.5px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+.profile .links {
+  width: 100%;
+  height: 50px;
+  background: #F2F2F2;
+  border-top: 1px solid #44d581;
+  margin-top: 35px;
+  border-radius: 5px;
+  color: white;
+  font-size: 2em;
+  line-height: 1.5em;
+  position: absolute;
+  bottom: 0;
+}
+.profile .links a {
+  color: white;
+}
+.profile .links .fb {
+  position: absolute;
+  left: 0;
+  width: 25%;
+  height: 100%;
+  background-color: #3b5998;
+}
+.profile .links .fb:hover {
+  background-color: #4264aa;
+}
+.profile .links .twitter {
+  position: absolute;
+  left: 25%;
+  width: 25%;
+  height: 100%;
+  background-color: #55ACEE;
+}
+.profile .links .twitter:hover {
+  background-color: #6cb7f0;
+}
+.profile .links .follow {
+  position: absolute;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  background-color: #2ECC71;
+}
+.profile .links .follow:hover {
+  background-color: #40d47e;
+}
+
+.profile-card-2 {
+  width: 250px;
+  height: 500px;
+  background: #2ECC71;
+}

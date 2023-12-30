@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'title' %}{% endblock 'title' %}
+
+{% block 'style' %}
+
+    <link rel="stylesheet" href="{% static 'css/login-styles.css' %}">
+
+{% endblock 'style' %}
+
+{% block 'content' %}
+
+<div class="w-full sm:max-w-lg sm:mx-auto px-4">
+	<article class="overflow-hidden rounded shadow my-4">
+		<div class="sm:flex sm:flex-wrap">
+			<div class="screen">
+				<div class="screen__content">
+					<form class="login pt-5" action="" method="post">
+						{% csrf_token %}    
+						<div class="login__field">
+							<i class="login__icon fas fa-user"></i>
+							<input type="text" class="login__input" placeholder="Username" name="username" required minlength="5">
+							<p class="text-danger"><small>{{message_username}}</small></p>
+						</div>
+						<div class="login__field">
+							<i class="login__icon fas fa-lock"></i>
+							<input type="password" class="login__input" placeholder="Password" name="password" required>
+						</div>
+						<div class="login__field">  
+							<i class="login__icon fas fa-lock"></i>
+							<input type="password" class="login__input" placeholder="Confirm Password" name="confirm-password" required>
+							<p class="text-danger"><small>{{message_password}}</small></p>
+						</div>
+						<div class="login__field">
+							<i class="login__icon fas fa-lock"></i>
+							<input type="tel" class="login__input" placeholder="Mobile Number" name="mobile-number" required>
+							<p class="text-danger"><small>{{message_mbnumber}}</small></p>
+						</div>
+						<p class="text-warning fw-normal" style="font-size: 12px;">By signing up, you are indicating your agreement to our 
+							<a href="{% url 'FknAp:terms' %}" class="text-decoration-none text-light"> terms and conditions</a>
+		
+		
+						<button class="button login__submit">
+							<span class="button__text" type="submit">Sign Up Now</span>
+							<i class="button__icon fas fa-chevron-right"></i>
+						</button>				
+					</form>
+					
+					<div class="social-login">
+						<h5></h5>
+						<div class="social-icons">
+						</div>
+					</div>
+				</div>
+				<div class="screen__background">
+					<span class="screen__background__shape screen__background__shape4"></span>
+					<span class="screen__background__shape screen__background__shape3"></span>		
+					<span class="screen__background__shape screen__background__shape2"></span>
+					<span class="screen__background__shape screen__background__shape1"></span>
+				</div>		
+			</div>
+		</div>
+	</article>
+</div>
+
+{% endblock 'content' %}
+
+
+
+

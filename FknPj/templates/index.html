@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'title' %}{% endblock 'title' %}
+
+{% block 'style' %}
+
+<link rel="stylesheet" href="{% static 'css/index-styles.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+{% endblock 'style' %}
+
+{% block 'content' %}
+
+{% include "header.html" %}
+
+<div class="w-full sm:max-w-lg sm:mx-auto px-4">
+    {% for item in posts %}
+    <div class="post">
+        
+        <article class="overflow-hidden rounded shadow mt-4">
+            <div class="sm:flex sm:flex-wrap">
+                <div class="sm:w-100 p-4">
+                    <span class="uppercase tracking-wide inline-block px-2 rounded-full text-xs bg-gray-300 text-gray-600"><i class="bi bi-quote"></i></span>
+                    <div class="content"><p class="text-gray-700 mt-2 mb-0" id="content">{{ item.content_text }}</p></div>
+                    <button class="btn btn-sm btn-link text-decoration-none p-0" onclick="toggleContent(this)" style="padding:0;">Read More</button>
+                    <div class="flex mt-4">
+                        {% if item.creater.profile_pic %}   <img src="{{ item.creater.profile_pic.url }}"  class="h-10 w-10 object-cover rounded">
+                        {% else %}  <img src="{% static 'img/placeholder.png' %}"  class="h-10 w-10 object-cover rounded">  {% endif %}
+                        <div class="pl-3 text-sm text-gray-600 ">
+                            <p class="truncate">{{item.creater}} <br>
+                            <small class="text-body-secondary fw-lighter">
+                            Updated {{ item.date_created|timesince }} ago
+                            </small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        
+        <nav id="articleOptions" class="navbar navbar_2 navbar-light bg-light mt-1" style="display: none;">
+            <div class="icon-container">
+                <ul class="row mb-2">
+                    <li class="col nav-item">
+                        <a class="nav-link"> </a><i class="bi bi-arrow-return-left"></i></a>
+                    </li>
+                    <li class="col nav-item">
+                        <a {% if user.is_authenticated %} href="{% url 'FknAp:comments' item.id %}" {% endif %} class="nav-link"><i class="fa-regular fa-comments"></i></a>
+                    </li>
+                    <li class="col nav-item">
+                        <a class="nav-link" ><i class="bi bi-pencil" data-bs-toggle="modal" data-bs-target="#edit_quotes{{ item.id }}" data-bs-placement="right"></i> </a>
+                    </li>
+                    <li class="col nav-item">
+                        <a class="nav-link" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                            <i class="bi bi-trash"></i>
+                          </a>
+                    </li>
+                    <li class="col nav-item">
+                        
+                        <a class="nav-link" {% if user.is_authenticated %} ondblclick="copyContent('{{ item.content_text|escapejs }}');" {% endif %}><i class="bi bi-files scrollLink"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+<!-- popup for editing -->
+{% if request.user.is_authenticated and customuser.username == item.creater.username %}
+<div class="modal fade" id="edit_quotes{{ item.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content border-1" style="border-color: #000157;">
+            <div class="modal-body p-2 pb-0">
+                <form method="post" action="{% url 'FknAp:edit_post' item.id %}">
+                    {% csrf_token %}
+                    <div class="form-group"><textarea class="form-control p-3" id="postContent" name="edit_text" rows="6" required minlength="50">{{ item.content_text }}</textarea></div>
+                    <div class="row px-4 my-2">
+                        <p class="col-11 fw-lighter">Capture your thoughts</p>
+                        <button type="submit" class="col-1 btn btn-link p-0" ><i class="fa-solid fa-paper-plane" style="font-size: 20px; color: #000157;"></i></button>    
+                    </div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<!-- alert popup for delete confirm message  -->
+{% if request.user.is_authenticated and customuser.username == item.creater.username %}
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-light border border-primary">
+        <div class="modal-body text-dark"><p><small>Are you absolutely sure you want to proceed and delete this item?</small></p></div>
+        <div class="modal-footer border-0 mt-0 pt-0">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <a href="{% url 'FknAp:delete_post' item.id %}" type="button" class="btn btn-sm btn-primary">Delete</a>
+
+        </div>
+      </div>
+    </div>
+</div> 
+{% endif %}
+
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- Add Post Button -->
+<button class="add-post-button" {% if user.is_authenticated %} data-toggle="modal" {% endif %} data-target="#postModal">
+<a {% if not user.is_authenticated %} href="" {% endif %} class="text-decoration-none text-light">Add Post</a></button>
+
+<!-- Post adding popup Window -->
+{% if request.user.is_authenticated %} 
+<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content border-1" style="border-color: #000157;">
+            <div class="modal-body p-2 pb-0">
+                <form method="post" action="{% url 'FknAp:create_post' %}">
+                    {% csrf_token %}
+                    <div class="form-group"><textarea class="form-control p-3" id="postContent" name ="content_text" rows="6" required minlength="50"></textarea></div>
+                    <div class="row px-4 my-2">
+                        <p class="col-11 fw-lighter"><small>Capture your thoughts</small></p>
+                        <button type="submit" class="col-1 btn btn-link p-0" ><i class="fa-solid fa-paper-plane" style="font-size: 20px; color: #000157;"></i></button>    
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if user.is_authenticated %}
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000" id="infoToast"
+ style="width: fit-content;">
+    <div class="toast-body"> Content is copied! </div>
+</div>
+{% endif %}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/index.js' %}"></script>
+
+    
+{% endblock 'content' %}
+

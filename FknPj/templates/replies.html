@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Reply</title>
+</head>
+<body>
+    <h1>Add Reply</h1>
+    
+    <div>
+        <p>Parent Comment: {{ parent_comment.comment_content }}</p>
+
+        <form method="post" action="{% url 'FknApadd_reply' post.id parent_comment.id %}">
+            {% csrf_token %}
+            <textarea name="body" placeholder="Your reply" required></textarea>
+            <button type="submit">Reply</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Replies:</h2>
+        {% if comments %}
+            <ul>
+            {% for comment in comments %}
+                <li>{{ comment.comment_content }}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No replies yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+/* add post popup window styles */
+
+/* Custom styles for the "Add Post" button */
+.add-post-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    background-color: #000157;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-post-button:hover {
+    background-color: #000157;
+}
+
+/* Custom styles for the post window */
+.post-window {
+    position: fixed;
+    bottom: 20%;
+    left: 20%;
+    width: 60%;
+    background: #fff;
+    border: 2px solid #000157;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+/* Style for the pen and trash icons */
+
+
+.icon-container i {
+    font-size: 18px;
+    /* color: #6c757d;  */
+    color: #000157; 
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.icon-container i:hover {
+    color: #ff0000;
+}
+
+/* You can place this in your existing CSS file or style block */
+
+/* Modal style */
+.modal-content {
+    background-color: #fff; /* Set the background color */
+    border: none; /* Remove border */
+}
+
+/* Modal footer style */
+.modal-footer {
+    border-top: none; /* Remove border at the top of the footer */
+}
+
+/* Button style */
+.btn-primary {
+    background-color: #000157; /* Set button background color */
+    color: #fff; /* Set button text color */
+    border: none; /* Remove button border */
+    transition: background-color 0.3s ease; /* Add transition for hover effect */
+}
+
+.btn-primary:hover {
+    background-color: #000; /* Change button color on hover */
+}
+
+
+/* Custom CSS to center the toast */
+.toast {
+    color: #000157;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

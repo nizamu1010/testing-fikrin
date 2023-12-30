@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'title' %}{% endblock 'title' %}
+
+{% block 'style' %}
+    <link rel="stylesheet" href="{% static 'css/login-styles.css' %}">
+{% endblock 'style' %}
+
+{% block 'content' %}
+
+<div class="w-full sm:max-w-lg sm:mx-auto px-4">
+	<article class="overflow-hidden rounded shadow my-4">
+		<div class="sm:flex sm:flex-wrap">
+			<div class="screen">
+				<div class="screen__content">
+					<form class="login" action="" method="post">
+						{% csrf_token %}  
+						<div class="login__field">
+							<i class="login__icon fas fa-user"></i>
+							<input type="text" class="login__input" placeholder="Username" name="username" required minlength="5">
+							<p class="text-danger"><small>{{error_message}}</small></p>
+						</div>
+						<div class="login__field">
+							<i class="login__icon fas fa-lock"></i>
+							<input type="password" class="login__input" placeholder="Password" name="password" required>
+						</div>
+						<button class="button login__submit" type="submit">
+							<span class="button__text">Log In Now</span>
+							<i class="button__icon fas fa-chevron-right"></i>
+						</button>             
+					</form>
+					<div class="social-login pt-3">
+						<h5 class="text-break">Welcome<br>to Fikrin</h5>
+						<div class="social-icons">
+							<a href="{% url 'FknAp:signup' %}" class="social-login__icon fab">Sign Up</a>
+						</div>
+					</div>
+				</div>
+				<div class="screen__background">
+					<span class="screen__background__shape screen__background__shape4"></span>
+					<span class="screen__background__shape screen__background__shape3"></span>        
+					<span class="screen__background__shape screen__background__shape2"></span>
+					<span class="screen__background__shape screen__background__shape1"></span>
+				</div>      
+			</div>
+		</div>
+	</article>
+</div>
+
+{% endblock 'content' %}
+
+

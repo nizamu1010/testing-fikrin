@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'title' %}{% endblock 'title' %}
+
+{% block 'style' %}
+
+<link rel="stylesheet" href="{% static 'css/profile-styles.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+
+{% endblock 'style' %}
+
+
+{% block 'content' %}
+
+<section>
+  <div class="container-fluid sticky-top" style="padding: 0;">
+    <header class="navbar flex-md-nowrap p-0 shadow mb-0 pl-2" data-bs-theme="light" style="background-color: #000157;">  <!-- #000157 -->
+        <a class="navbar-brand fs-5 text-white pb-0" href="{% url 'FknAp:home' %}">
+          <i class="bi bi-house-fill px-2" style="display: block; width: 105px; height: 40px"><small class="fs-6 mx-2">Profile</small></i>
+        </a>
+    </header>
+</section>
+
+<section>
+
+  <div class="profile">
+    <a href="{% url 'FknAp:profile_cropping' user_id=user.id %}">
+      
+      <div class="img">
+        {% if customuser.profile_pic %}<img src="{{ customuser.profile_pic.url }}"/>
+        {% else %}<img src="{% static 'img/profile_avatar.png' %}"/>{% endif %}
+    </div>
+    </a>
+    
+    <a class="view-more" href="">
+      <div class="popup"></div>
+    </a>
+    <div class="mid-section pt-0">
+      <div class="name">{{ customuser.username }}</div>
+      <div class="description">Embracing thoughts, sharing quotes. Joining hearts through words on this social journey</div>
+      <div class="line"></div>
+      <div class="stats">
+        <div class="stat mt-3">
+          <a href="{% url 'FknAp:signout' %}">
+            <button class="btn btn-primary" style="background-color: #020481; border: 0;">Sign Out</button></a>
+        </div>
+      </div>
+    </div>
+
+</section>
+
+
+
+
+  {% endblock 'content' %}
+
+
+
+

@@ -1,0 +1,60 @@
+{% load static %}
+
+<div class="container-fluid sticky-top" style="padding: 0;">
+    <header class="navbar flex-md-nowrap p-0 shadow mb-0" data-bs-theme="light" style="background-color: #000157;">  <!-- #000157 -->
+        <a class="navbar-brand fs-6 text-white" href="#">
+            <img src="{% static 'img/fkrnlogo.png' %}" style="width: 105px; height: 60px" alt="Logo">
+        </a>
+        <ul class="navbar-nav flex-row d-md-none">
+            <li class="nav-item text-nowrap">
+                <a href="" class="nav-link px-3"></a>
+            </li>
+            <li class="nav-item text-nowrap">
+                <button class="nav-link px-3 text-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="bi bi-list text-light"></i>
+                </button>
+            </li>
+        </ul>
+    </header>
+    
+    {% if  not user.is_authenticated %}
+    <div class="alert alert-info alert-dismissible fade show mb-0 rounded-3 shadow-sm" role="alert" style="background-color: #e6f7ff; color: #004085; border-color: #b8daff;">
+       <small>Follow this for the full experience!</small>  
+        <a class="ms-3" href="{% url 'FknAp:login' %}" style="text-decoration: none; color: #0056b3; font-weight: bold;"><small>Login</small></a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    
+    
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="sidebar border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+            <div class="offcanvas-lg offcanvas-end d-flex flex-column flex-shrink-0 bg-light justify-content-center rounded-2" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" 
+            style="width: 3rem; height: 200px; position: fixed; right: 4px; margin-top: 75px;">
+                <ul class="nav nav-pills nav-flush flex-column text-center">
+                    <li>
+                        <a {% if not user.is_authenticated %} href="" {% endif %} {% if user.is_authenticated %} href="{% url 'FknAp:profile' %}" {% endif %} class="nav-link py-3" aria-current="page" title="Profile" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <i class="bi bi-person-circle pe-none" width="24" height="24" role="img" aria-label="Profile" style="color: #000157;"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a  class="nav-link py-3" title="Quotes" {% if not user.is_authenticated %} href="" {% endif %} {% if user.is_authenticated %} data-toggle="modal" data-target="#postModal" {% endif %} data-bs-target="#exampleModal" data-bs-placement="right">
+                            <i class="bi bi-vector-pen pe-none" width="24" height="24" role="img" aria-label="Quotes" style="color: #000157;"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="" class="nav-link py-3" title="About us" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <i class="bi bi-info-circle pe-none" width="24" height="24" role="img" aria-label="About Us" style="color: #000157;"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 

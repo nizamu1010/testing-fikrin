@@ -1,0 +1,260 @@
+<!-- Live Example: https://play.studiokonkon.com/playground/pens/2022/220212-comments-ui/ -->
+
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'title' %}{% endblock 'title' %}
+
+{% block 'style' %}
+
+<link rel="stylesheet" href="{% static 'css/comment-styles.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+{% endblock 'style' %}
+
+{% block 'content' %}
+<!-- header section -->
+<section>
+<div class="container-fluid sticky-top" style="padding: 0;">
+   <header class="navbar flex-md-nowrap p-0 shadow mb-0 pl-2" data-bs-theme="light" style="background-color: #000157;">  <!-- #000157 -->
+      <a class="navbar-brand fs-5 text-white pb-0" href="{% url 'FknAp:home' %}">
+         <i class="bi bi-house-fill px-2" style="display: block; width: 105px; height: 40px"><small class="fs-6 mx-2">Comments</small></i>
+      </a>
+   </header>
+</section>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+   <symbol id="google-thumb_up" viewBox="0 -960 960 960">
+      <path d="M716-120H272v-512l278-288 39 31q6 5 9 14t3 22v10l-45 211h299q24 0 42 18t18 42v81.839q0 7.161 1.5 14.661T915-461L789-171q-8.878 21.25-29.595 36.125Q738.689-120 716-120Zm-384-60h397l126-299v-93H482l53-249-203 214v427Zm0-427v427-427Zm-60-25v60H139v392h133v60H79v-512h193Z"></path>
+   </symbol>
+   <symbol id="google-thumb_up-fill" viewBox="0 -960 960 960">
+      <path d="M721-120H254v-512l278-288 33 26q11 8 14.5 18t3.5 23v10l-45 211h322q23 0 41.5 18.5T920-572v82q0 11-2.5 25.5T910-439L794-171q-9 21-29.5 36T721-120ZM194-632v512H80v-512h114Z"></path>
+   </symbol>
+   <symbol id="google-thumb_down" viewBox="0 -960 960 960">
+      <path d="M242-840h444v512L408-40l-39-31q-6-5-9-14t-3-22v-10l45-211H103q-24 0-42-18t-18-42v-81.839Q43-477 41.5-484.5T43-499l126-290q8.878-21.25 29.595-36.125Q219.311-840 242-840Zm384 60H229L103-481v93h373l-53 249 203-214v-427Zm0 427v-427 427Zm60 25v-60h133v-392H686v-60h193v512H686Z"></path>
+   </symbol>
+   <symbol id="google-thumb_down-fill" viewBox="0 -960 960 960">
+      <path d="M239-840h467v512L428-40l-33-26q-11-8-14.5-18t-3.5-23v-10l45-211H100q-23 0-41.5-18.5T40-388v-82q0-11 2.5-25.5T50-521l116-268q9-21 29.5-36t43.5-15Zm527 512v-512h114v512H766Z"></path>
+   </symbol>
+</svg>
+
+<div class="app container py-4 px-3">
+   <div class="col-md-10 col-lg-8 m-auto">
+      <!-- post showing -->
+      <p class="lead mb-3 fw-light fs-6 text-center">{{ post.content_text }}</p><hr>
+      <!-- add comment section -->
+      <div class="pt-1 mb-2">
+         <div class="mb-1 hstack gap-3 align-items-center">
+            <p class="fs-6 text-danger">
+               <a href="#" class="bi bi-plus-square text-decoration-none add-comment">
+                  <small class="px-2">Add a comment</small>
+               </a>
+            </p>
+         </div>
+      </div>
+      <!-- text area for adding comments -->
+      <div class="comment-form" style="display: none;">
+         <div class="container-fluid">
+            <form method="post" action="{% url 'FknAp:comments' post.id %}">
+               {% csrf_token %}
+               <div class="card fixed-textarea m-0 fixed-bottom" style="border-radius: 0;">
+                  <div class="card-body">
+                        <div class="input-group">
+                           <textarea class="form-control" placeholder="Add a comment" name="comment_text" id="my-comment-reply" style="height:2rem;" required minlength="1"></textarea>
+                           <div class="input-group-append">
+                              <button class="submit-icon" type="submit"><i class="far fa-paper-plane fa-lg p-2 "></i></button>
+                           </div>
+                        </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+
+      <!-- all Comment section window -->
+      <div class="vstack gap-4 mb-5" style="--sk-icon-btn-size:1.25em;--sk-icon-btn-padding:.25rem;">
+         {% for cmt in comments %}
+         <div class="comment-box">
+            <!-- showing comments cards -->
+            <div class="d-flex comment">
+               <div class="flex-grow-1 ms-3">
+                     <div class="mb-1">
+                        <a href="" class="fw-bold link-body-emphasis me-1 text-danger">{{ cmt.commenter }}</a>
+                        <i class="zmdi zmdi-check me-1 fw-bold" title="verified"></i>
+                        <span class="text-body-secondary text-nowrap fs-6"><small>{{ cmt.comment_time|timesince }} ago</small></span>
+                     </div>
+                     <div class="mb-1">{{ cmt.comment_content }}</div>
+                     <div style="margin-left:-.769rem;">
+                        <button class="btn btn-primary rounded-pill d-inline-flex align-items-center collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-comment001{{ cmt.id }}" aria-expanded="true" aria-controls="collapse-comment001{{ cmt.id }}">
+                           <i class="chevron-down zmdi zmdi-chevron-down fs-4 me-2"></i>
+                           <i class="chevron-up zmdi zmdi-chevron-up fs-4 me-2"></i>
+                           <span>
+                                 {% if cmt.replies.count > 0 %}
+                                    {{ cmt.replies.count }} {{ cmt.replies.count|pluralize:"Reply,Replies" }}
+                                 {% else %}
+                                    Reply
+                                 {% endif %}
+                           </span>
+                           {% if request.user.is_authenticated and customuser.username == cmt.commenter.username %}
+                                 <form action="{% url 'FknAp:comment_delete' post.id cmt.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                 </form>
+                           {% endif %}
+                        </button>
+                     </div>
+               </div>
+            </div>
+
+            <!-- expand the text area for add replays -->
+            <div class="collapse" id="collapse-comment001{{ cmt.id }}">
+               <div class="container-fluid">
+                  <form method="post" action="{% url 'FknAp:add_reply' post.id cmt.id %}">
+                     {% csrf_token %}
+                     <div class="card fixed-textarea m-0 fixed-bottom" style="border-radius: 0;">
+                        <div class="card-body">
+                              <div class="input-group">
+                                 <textarea id="replyContent" class="form-control" placeholder="Add a replay" name="body" id="my-comment-reply" style="height:2rem;" required minlength="1"></textarea>
+                                 <div class="input-group-append">
+                                    <button class="submit-icon" type="submit"><i class="far fa-paper-plane fa-lg p-2 "></i></button>
+                                 </div>
+                              </div>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+
+              <!-- Replies showing -->
+               {% if cmt.replies.all %}
+               {% for reply in cmt.replies.all %}
+                  <div class="d-flex">
+                     <div class="flex-grow-1 ms-5">
+                        <div class="mb-1">
+                           <a class="fw-bold pe-1 text-decoration-none">{{ reply.commenter.username }}</a>
+                           <span class="text-body-secondary text-nowrap"><small>{{ reply.comment_time|timesince }} ago</small></span>
+                        </div>
+                        <div class="mb-2">{{ reply.comment_content }}</div>
+                        <div class="hstack align-items-center" style="margin-left:-.25rem;">
+                           <button class="btn btn-sm btn-link text-decoration-none text-danger reply-btn" data-username="{{ reply.commenter.username }}">Repaly</button>                          {% if request.user.is_authenticated and customuser.username == reply.commenter.username %}
+                              <form action="{% url 'FknAp:comment_delete' post.id reply.id %}" method="post">
+                                 {% csrf_token %}
+                                 <button type="submit" class="btn btn-sm btn-link text-decoration-none text-danger">Delete</button>
+                              </form>
+                           {% endif %}
+                        </div>
+                     </div>
+                  </div>
+               {% endfor %}
+               {% endif %}
+
+               </div>
+         </div>
+         {% endfor %}
+      </div>
+   </div>
+</div>
+
+
+<style>
+   .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+   }
+   .btn-bd-primary {
+      --bd-violet-bg: #712cf9;
+      --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+      --bs-btn-font-weight: 600;
+      --bs-btn-color: var(--bs-white);
+      --bs-btn-bg: var(--bd-violet-bg);
+      --bs-btn-border-color: var(--bd-violet-bg);
+      --bs-btn-hover-color: var(--bs-white);
+      --bs-btn-hover-bg: #6528e0;
+      --bs-btn-hover-border-color: #6528e0;
+      --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+      --bs-btn-active-color: var(--bs-btn-hover-color);
+      --bs-btn-active-bg: #5a23c8;
+      --bs-btn-active-border-color: #5a23c8;
+   }
+   .bd-mode-toggle {
+      z-index: 1500;
+   }
+
+.fixed-textarea textarea:focus {
+   outline: none;
+   box-shadow: none;
+}
+
+.fixed-textarea textarea {
+   border: none;
+   resize: none;
+   height: 10px;
+}
+
+.fixed-textarea .input-group-append button {
+   border: none;
+   background: transparent;
+   transition: transform 0.3s ease;
+   cursor: pointer;
+}
+
+.fixed-textarea .input-group-append button:hover {
+   transform: scale(1.1);
+}
+</style>
+
+<script>
+
+   document.addEventListener("DOMContentLoaded", function() {
+       const replyButtons = document.querySelectorAll('.reply-btn');
+
+       replyButtons.forEach(button => {
+           button.addEventListener('click', function(event) {
+               event.preventDefault();
+               const username = this.getAttribute('data-username');
+               const textarea = document.getElementById('replyContent');
+
+               // Append the username to the textarea
+               textarea.value = `@${username} : `;
+           });
+       });
+   });
+
+   </script>
+
+
+<script>
+   document.addEventListener("DOMContentLoaded", function() {
+   const addCommentLink = document.querySelector('.add-comment');
+   const commentForm = document.querySelector('.comment-form');
+
+   addCommentLink.addEventListener('click', function(event) {
+      event.preventDefault(); // Prevents the default behavior of the link
+
+      // Toggle visibility of the comment form
+      if (commentForm.style.display === 'none' || commentForm.style.display === '') {
+         commentForm.style.display = 'block';
+      } else {
+         commentForm.style.display = 'none';
+      }
+   });
+
+   // Additional functionality for submitting the comment (you might need to handle this part)
+   const submitButton = document.getElementById('submit-comment');
+   submitButton.addEventListener('click', function() {
+      // Perform actions to submit the comment here
+      const commentText = document.getElementById('comment-textarea').value;
+      // You can send the comment to the server or perform other necessary actions
+      // Reset the form or hide it after submitting
+      commentForm.style.display = 'none';
+   });
+});
+
+</script>
+
+{% endblock 'content' %}
+
+

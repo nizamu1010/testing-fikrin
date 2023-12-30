@@ -1,0 +1,122 @@
+hosting a python django project to aws EC2 instance
+
+
+1. to access the instence : ssh -i /path/to/your/key.pem ec2-user@your-instance-public-ip
+( .bash_logout  .bashrc  .cache  .profile  .ssh )
+
+
+2. Once connected, update the package repositories and install necessary software : 
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install python3 python3-pip 
+
+4. git clone https://github.com/your_username/your_django_project.git
+
+pip install virtualenv 
+virtualenv env
+source env/bin/activate
+pip install -r requirements.txt
+pip list
+
+( .bash_logout  .bashrc  .cache  .profile  .ssh  .sudo_as_admin_successful )
+
+
+3. install nginx and gunicorn :
+sudo apt-get install -y nginx
+pip install gunicorn
+
+Now if searched with public ip address it will show nginx welcome page
+
+
+
+6. Collect Static Files :
+python manage.py collectstatic
+( 146 static files copied to '/home/ubuntu/FikrinRepo/fikrin/assets'. )
+
+
+8. sudo apt-get install supervisor
+
+
+9. cd /etc/supervisor/conf.d/
+sudo touch gunicorn.conf
+sudo nano gunicorn.conf
+
+and add this : 
+
+
+[program:gunicorn]
+command=/home/ubuntu/env/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/FikrinRepo/fikrin/app.sock Fikrin.wsgi:application
+directory=/home/ubuntu/FikrinRepo/fikrin
+user=ubuntu
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/gunicorn/access.log
+stderr_logfile=/var/log/gunicorn/error.log
+
+[group:guni]
+programs:gunicorn
+
+
+10. sudo mkdir /var/log/gunicorn
+
+11. sudo supervisorctl reread
+( guni: available )
+sudo supervisorctl update
+( guni: added process group )
+sudo supervisorctl status
+( guni:gunicorn   RUNNING   pid 21029, uptime 0:00:37 )
+
+
+12. cd /etc/nginx
+sudo nano nginx.conf
+
+change to root as the following content :
+
+user root;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+
+
+13. cd /etc/nginx/sites-available
+sudo touch django.conf
+sudo nano django.conf
+
+add this :
+
+
+server {
+
+listen 80;
+server_name 16.171.159.245 fikr.in www.fikr.in;
+
+location / {
+
+include proxy_params; proxy_pass http://unix:/home/ubuntu/FikrinRepo/fikrin/app.sock;
+
+}
+}
+
+
+15. sudo nginx -t
+
+sudo ln django.conf /etc/nginx/sites-enabled
+
+sudo service nginx restart
+sudo service supervisor restart
+
+
+
+
+git tocken : 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
+
+aws connect pem key : ssh -i "nirkif.pem" ubuntu@ec2-16-171-39-228.eu-north-1.compute.amazonaws.com
+
+
+
+python manage.py runserver
+
+
+
