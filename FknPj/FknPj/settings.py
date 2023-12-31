@@ -64,19 +64,23 @@ WSGI_APPLICATION = "FknPj.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'fkrndb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'FnKi@10$NiFk',
+#         'HOST': 'localhost',  # or the database server host
+#         'PORT': '5432',       # the default port for PostgreSQL
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fkrndb',
-        'USER': 'postgres',
-        'PASSWORD': 'FnKi@10$NiFk',
-        'HOST': 'localhost',  # or the database server host
-        'PORT': '5432',       # the default port for PostgreSQL
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
