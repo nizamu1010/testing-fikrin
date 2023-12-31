@@ -110,7 +110,7 @@
 
 <!-- Add Post Button -->
 <button class="add-post-button" {% if user.is_authenticated %} data-toggle="modal" {% endif %} data-target="#postModal">
-<a {% if not user.is_authenticated %} href="" {% endif %} class="text-decoration-none text-light">Add Post</a></button>
+<a {% if not user.is_authenticated %} href="" {% endif %} class="text-decoration-none text-light"><img src="{% static 'img/write.png' %}" alt=""></a></button>
 
 <!-- Post adding popup Window -->
 {% if request.user.is_authenticated %} 

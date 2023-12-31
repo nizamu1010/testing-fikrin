@@ -6,7 +6,7 @@
     bottom: 20px;
     right: 20px;
     z-index: 999;
-    background-color: #000157;
+    /* background-color: #000157; */
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -15,9 +15,6 @@
     transition: background-color 0.3s;
 }
 
-.add-post-button:hover {
-    background-color: #000157;
-}
 
 /* Custom styles for the post window */
 .post-window {

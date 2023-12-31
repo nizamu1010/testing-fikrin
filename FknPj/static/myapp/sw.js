@@ -1,5 +1,6 @@
 
-const staticCacheName = 'site-static-1';
+const staticCacheName = 'site-static-2';
+const dynamicCacheName = 'site-dynamic-1';
 const assets = [
     '/',
     '/static/css/bootstrap.min.css', '/static/css/comment-styles.css', '/static/css/index-styles.css', '/static/css/login-styles.css',  '/static/css/profile-styles.css',  '/static/css/styles.css',
@@ -31,10 +32,16 @@ self.addEventListener('activate', evt => {
 
 // fetch event
 self.addEventListener('fetch', evt => {
-    //console.log('fetch event', evt);
     evt.respondwith(
         caches.match(evt.request).then(cacheRes => {
-            return cacheRes || fetch(evt.request);
+            return cacheRes || fetch(evt.request).then(fetchRes => {
+                return caches.open(dynamicCache).then(cache => {
+                    CacheStorage.put(evt.request.url, fetchRes.clone());
+                    return fetchRes;
+                }
+
+                )
+            })
         })
     );
 });
