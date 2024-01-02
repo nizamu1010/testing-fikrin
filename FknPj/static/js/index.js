@@ -38,7 +38,6 @@ posts.forEach(post => {
 
 // read-more script 
 
-
   function toggleContent(button) {
     var content = button.previousElementSibling;
 
@@ -81,3 +80,72 @@ posts.forEach(post => {
             infoToast.show();
         });
     });
+
+
+
+
+
+// firebase scripts for cloud messaging
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDkyNO4aWT4qVCVJwkcb354_Rtc-TdFybk",
+  authDomain: "fknpj-9c7bb.firebaseapp.com",
+  projectId: "fknpj-9c7bb",
+  storageBucket: "fknpj-9c7bb.appspot.com",
+  messagingSenderId: "624374608791",
+  appId: "1:624374608791:web:143bdac26d9762dcbb0ad2",
+  measurementId: "G-93ZXLVMBCF"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+// First, we need to link the service worker.
+navigator.serviceWorker
+.register('./serviceworker.js') 
+.then(function(register) {
+messaging.useServiceWorker(register);
+
+// Request permission from the user to receive notifications
+messaging.requestPermission()
+.then(function() {
+  console.log("The user has accepted to receive notifications.");
+  return messaging.getToken();
+})
+.then(function(token){
+  console.log(token);
+
+//we will send the token to django to save it in the database
+fetch('save-token/', {
+  method: 'post',
+  headers: {
+    'Content-Type': 'application/json',    
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({
+    'token': token
+  })
+})
+  
+.then(function(response) {
+  if (response.ok) {
+      console.log("Token has been saved");
+  } else {
+      console.log("Failed to save token. Status: " + response.status);
+  }
+})
+
+.catch(function(e){
+  console.log("token could not be saved") 
+  })
+
+})
+.catch(function(e) {
+  console.log("The user has not accepted.");
+});
+});

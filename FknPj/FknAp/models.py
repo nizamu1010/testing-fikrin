@@ -66,3 +66,11 @@ class Comment(models.Model):
     
     def delete_post(self):
         self.delete()
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)  # Import the Post model
+    message = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
