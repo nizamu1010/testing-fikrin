@@ -13,69 +13,6 @@ from .forms import ImageForm
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here. CustomUser    profile_pic
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comment
-
-import json
-import requests
-from firebase_admin.messaging import Message, Notification
-from django.shortcuts import render, redirect
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.views.decorators.http import require_http_methods
-from fcm_django.models import FCMDevice
-
-
-
-@csrf_exempt
-@require_http_methods(['POST'])
-def save_token(request):
-
-    body_dict = json.loads(request.body.decode('utf-8'))
-    token = body_dict['token']
-    existe = FCMDevice.objects.filter(registration_id=token, active=True)
-
-    if len(existe) > 0:
-        return HttpResponseBadRequest(json.dumps ({ 'message': 'the token already exists'}))
-    
-    divice = FCMDevice()
-    divice.registration_id = token
-    divice.active= True
-
-    #solo si el usuario esta autenticado procederemos a enlazarlo
-    if request.user.is_authenticated: divice.user = request.user
-
-    try:
-        divice.save()
-        return HttpResponse(json.dumps({ 'message': 'token guardado'}))
-    except:
-        return HttpResponseBadRequest(json.dumps({'message': 'no se ha podido guardar'}))
-    
-
-
-def send_notification(registration_ids, message_title, message_desc, post_id):
-    fcm_api = "AAAAnvinOgI:APA91bGqvTyi96rSym5-ntZqPF3cWb9IVLsYu_Vtr9YWRZUeUutCYZIUO2Y6qzu0owSUHxEQdvaTostXYYfAQpP0B5Kxxw_IHXsrwcE9LyC9_1r-d_7vB6mGjWeY-oSt7iXzCLACmc4I"
-    url = "https://fcm.googleapis.com/fcm/send"
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": 'key=' + fcm_api
-    }
-
-    payload = {
-        "registration_ids": registration_ids,
-        "priority": "high",
-        "notification": {
-            "body": message_desc,
-            "title": message_title + ": ",
-        },
-        "data": {
-            "post_id": post_id,
-        }
-    }
-
-    result = requests.post(url, data=json.dumps(payload), headers=headers)
-    print(result.json())
 
 
 def home(request):
@@ -188,28 +125,6 @@ def create_post(request):
         content_text = request.POST.get('content_text')
 
         post = Post.objects.create(creater=request.user, content_text=content_text)
-
-        # Get the ID of the newly created post
-        post_id = post.id
-
-        try:
-            devices = FCMDevice.objects.filter(active=True)
-            registration_ids = [device.registration_id for device in devices]
-
-            if registration_ids:
-                message_title = request.user
-                message_desc = content_text
-                send_notification(registration_ids, message_title, message_desc, post_id)
-                print('Notification sent to {} devices.'.format(len(registration_ids)))
-            else:
-                print('No active devices found for sending notifications.')
-
-        except ObjectDoesNotExist:
-            print('An error occurred: FCMDevice model not found or misconfigured.')
-        except Exception as e:
-            print('An error occurred:', str(e))
-
-
         return redirect('FknAp:home')
 
     posts = Post.objects.all()
@@ -318,42 +233,3 @@ def delete_comment(request, post_id, comment_id):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
-
-import firebase_admin
-from firebase_admin import messaging
-
-# Function to send push notifications using FCM
-def send_push_notification(registration_token, title, message_body):
-    # Create a message
-    message = messaging.Message(
-        notification=messaging.Notification(
-            title=title,
-            body=message_body,
-        ),
-        token=registration_token,
-    )
-
-    # Send the message using the Firebase Admin SDK
-    try:
-        response = messaging.send(message)
-        print("Successfully sent message:", response)
-    except Exception as e:
-        print("Error sending message:", e)
-
-
-# Example usage in a Django view
-from django.http import JsonResponse
-
-def send_notification_view(request):
-    # Get the device token from the request or database
-    device_token = "DEVICE_TOKEN_HERE"
-
-    # Send a push notification
-    send_push_notification(
-        token=device_token,
-        title="New Message",
-        body="You have a new message!"
-    )
-
-    return JsonResponse({"success": True})
