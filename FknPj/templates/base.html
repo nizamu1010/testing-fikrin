@@ -56,5 +56,60 @@
         <script src="{% static 'myapp/sw.js' %}"></script>
         <script src="{% static '/js/app.js' %}"></script>
         <script src="{% static '/js/ui.js' %}"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-messaging.js"></script>
+
+        <script type="module">
+
+    var firebaseConfig = {
+        apiKey: "AIzaSyDkyNO4aWT4qVCVJwkcb354_Rtc-TdFybk",
+        authDomain: "fknpj-9c7bb.firebaseapp.com",
+        projectId: "fknpj-9c7bb",
+        storageBucket: "fknpj-9c7bb.appspot.com",
+        messagingSenderId: "624374608791",
+        appId: "1:624374608791:web:143bdac26d9762dcbb0ad2",
+        measurementId: "G-93ZXLVMBCF"
+    };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        const messaging = firebase.messaging();
+        console.log(messaging.getToken())
+        messaging.getToken({ vapidKey: 'BD1y3vyzssdZQmFYYz9KQ_aw97CTJ-4XMyekXoovepWtDNv6z1ph-CN2SO1xcseBXmFxtuUyW14qY1dKPVDtJ4M' }).then((currentToken) => {
+        if (currentToken) { 
+          
+          console.log(currentToken)
+        } else {
+          console.log('No registration token available. Request permission to generate one.');
+       
+        }
+      }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+      
+      
+        messaging
+         .requestPermission()
+         .then(function () {
+           console.log("Notification permission granted.");
+           return messaging.getToken()
+         })
+         .catch(function (err) {
+         console.log("Unable to get permission to notify.", err);
+       });
+      
+      
+        messaging.onMessage((payload) => {
+        console.log('Message received. ', payload);
+       
+      });
+      
+    
+</script>
+
     </body>
 </html>

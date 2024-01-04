@@ -17,4 +17,7 @@ urlpatterns = [
     path("n/post/<int:post_id>/comments", views.comments, name="comments"),
     path('comment/<int:post_id>/<int:comment_id>/add_reply/', views.add_reply, name='add_reply'),
     path('comment/<int:post_id>/<int:comment_id>/delete/', views.delete_comment, name='comment_delete'),
+    path('firebase-messaging-sw.js',views.showFirebaseJS,name="show_firebase_js"),
+    path('send-notification',views.send,name="send"),
+
 ]

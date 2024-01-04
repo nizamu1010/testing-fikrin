@@ -233,3 +233,73 @@ def delete_comment(request, post_id, comment_id):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+def showFirebaseJS(request):
+    data='importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");' \
+         'importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js"); ' \
+         'var firebaseConfig = {' \
+         '        apiKey: "AIzaSyDkyNO4aWT4qVCVJwkcb354_Rtc-TdFybk",' \
+         '        authDomain: "fknpj-9c7bb.firebaseapp.com",' \
+         '        databaseURL: "",' \
+         '        projectId: "fknpj-9c7bb",' \
+         '        storageBucket: "fknpj-9c7bb.appspot.com",' \
+         '        messagingSenderId: "624374608791",' \
+         '        appId: "1:624374608791:web:143bdac26d9762dcbb0ad2",' \
+         '        measurementId: "G-93ZXLVMBCF"' \
+         ' };' \
+         'firebase.initializeApp(firebaseConfig);' \
+         'const messaging=firebase.messaging();' \
+         'messaging.setBackgroundMessageHandler(function (payload) {' \
+         '    console.log(payload);' \
+         '    const notification=JSON.parse(payload);' \
+         '    const notificationOption={' \
+         '        body:notification.body,' \
+         '        icon:notification.icon' \
+         '    };' \
+         '    return self.registration.showNotification(payload.notification.title,notificationOption);' \
+         '});'
+
+    return HttpResponse(data,content_type="text/javascript")
+
+
+
+from django.http.request import HttpHeaders
+from django.shortcuts import render
+
+from django.http import HttpResponse
+import requests
+import json
+
+
+
+def send_notification(registration_ids , message_title , message_desc):
+    fcm_api = "AAAAkV-gc5c:APA91bF4PJPVDpihuGhCzMljtG1RjI-ZOn0xLr8UscqsQGw6nPZ7mDz9ttTeXZUj6LHjT1fdwkhUEdXYa22jR-dJ-OEr3_MDwTbVNUsTB8Wofl8H8ApQ8Sbo8dkEnFNTR5OXeOIrtKTS"
+    url = "https://fcm.googleapis.com/fcm/send"
+    
+    headers = {
+    "Content-Type":"application/json",
+    "Authorization": 'key='+fcm_api}
+
+    payload = {
+        "registration_ids" :registration_ids,
+        "priority" : "high",
+        "notification" : {
+            "body" : message_desc,
+            "title" : message_title,
+            "image" : "https://i.ytimg.com/vi/m5WUPHRgdOA/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDwz-yjKEdwxvKjwMANGk5BedCOXQ",
+            "icon": "https://yt3.ggpht.com/ytc/AKedOLSMvoy4DeAVkMSAuiuaBdIGKC7a5Ib75bKzKO3jHg=s900-c-k-c0x00ffffff-no-rj",
+            
+        }
+    }
+
+    result = requests.post(url,  data=json.dumps(payload), headers=headers )
+    print(result.json())
+
+
+
+
+def send(request):
+    resgistration  = ['enhsXcb0AkFu2xF3T3sAcX:APA91bGr5vsfBy7Jh7iim53-Ic14_XPwrAp9PpIGLqoc18YoHflom-9KKnPjIGO1chQa1AEFKZkVsauH7Bn6-LMMJ9zQV-SP5NQKM6pDdTrjakLHHsupvcmVQQwH0GYCCJP9AT0gR2q6']
+    send_notification(resgistration , 'Code Keen added a new video' , 'Code Keen new video alert')
+    return HttpResponse("sent")
+
