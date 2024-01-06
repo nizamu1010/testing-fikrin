@@ -8,6 +8,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('FknAp.urls')),
+    path('', include('pwa.urls')),
 ]
 
 if settings.DEBUG:

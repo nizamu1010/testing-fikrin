@@ -13,7 +13,35 @@ from .forms import ImageForm
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here. CustomUser    profile_pic
 
+# ---------------------------------------------------------------------------------------------
+import requests
 
+def send_notification(registration_ids, message_title, message_desc, post_id):
+    fcm_api = "AAAAnvinOgI:APA91bGqvTyi96rSym5-ntZqPF3cWb9IVLsYu_Vtr9YWRZUeUutCYZIUO2Y6qzu0owSUHxEQdvaTostXYYfAQpP0B5Kxxw_IHXsrwcE9LyC9_1r-d_7vB6mGjWeY-oSt7iXzCLACmc4I"
+    url = "https://fcm.googleapis.com/fcm/send"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": 'key=' + fcm_api
+    }
+
+    payload = {
+        "registration_ids": registration_ids,
+        "priority": "high",
+        "notification": {
+            "body": message_desc,
+            "title": message_title + ": ",
+        },
+        "data": {
+            "post_id": post_id,
+        }
+    }
+
+    result = requests.post(url, data=json.dumps(payload), headers=headers)
+    print(result.json())
+
+
+# --------------------------------------------------------------------------------------------------------
 
 def home(request):
     posts = Post.objects.all().order_by('-date_created')
@@ -125,6 +153,29 @@ def create_post(request):
         content_text = request.POST.get('content_text')
 
         post = Post.objects.create(creater=request.user, content_text=content_text)
+
+        # --------------------------------------
+        # Get the ID of the newly created post
+        post_id = post.id
+
+        try:
+            devices = FCMDevice.objects.filter(active=True)
+            registration_ids = [device.registration_id for device in devices]
+
+            if registration_ids:
+                message_title = request.user
+                message_desc = content_text
+                send_notification(registration_ids, message_title, message_desc, post_id)
+                print('Notification sent to {} devices.'.format(len(registration_ids)))
+            else:
+                print('No active devices found for sending notifications.')
+
+        except ObjectDoesNotExist:
+            print('An error occurred: FCMDevice model not found or misconfigured.')
+        except Exception as e:
+            print('An error occurred:', str(e))
+
+        # --------------------------------------
         return redirect('FknAp:home')
 
     posts = Post.objects.all()
@@ -234,72 +285,34 @@ def delete_comment(request, post_id, comment_id):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-def showFirebaseJS(request):
-    data='importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");' \
-         'importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js"); ' \
-         'var firebaseConfig = {' \
-         '        apiKey: "AIzaSyDkyNO4aWT4qVCVJwkcb354_Rtc-TdFybk",' \
-         '        authDomain: "fknpj-9c7bb.firebaseapp.com",' \
-         '        databaseURL: "",' \
-         '        projectId: "fknpj-9c7bb",' \
-         '        storageBucket: "fknpj-9c7bb.appspot.com",' \
-         '        messagingSenderId: "624374608791",' \
-         '        appId: "1:624374608791:web:143bdac26d9762dcbb0ad2",' \
-         '        measurementId: "G-93ZXLVMBCF"' \
-         ' };' \
-         'firebase.initializeApp(firebaseConfig);' \
-         'const messaging=firebase.messaging();' \
-         'messaging.setBackgroundMessageHandler(function (payload) {' \
-         '    console.log(payload);' \
-         '    const notification=JSON.parse(payload);' \
-         '    const notificationOption={' \
-         '        body:notification.body,' \
-         '        icon:notification.icon' \
-         '    };' \
-         '    return self.registration.showNotification(payload.notification.title,notificationOption);' \
-         '});'
-
-    return HttpResponse(data,content_type="text/javascript")
-
-
-
-from django.http.request import HttpHeaders
-from django.shortcuts import render
-
-from django.http import HttpResponse
-import requests
-import json
-
-
-
-def send_notification(registration_ids , message_title , message_desc):
-    fcm_api = "AAAAkV-gc5c:APA91bF4PJPVDpihuGhCzMljtG1RjI-ZOn0xLr8UscqsQGw6nPZ7mDz9ttTeXZUj6LHjT1fdwkhUEdXYa22jR-dJ-OEr3_MDwTbVNUsTB8Wofl8H8ApQ8Sbo8dkEnFNTR5OXeOIrtKTS"
-    url = "https://fcm.googleapis.com/fcm/send"
+# -----------------------------------------------------------------------------------
     
-    headers = {
-    "Content-Type":"application/json",
-    "Authorization": 'key='+fcm_api}
+from django.views.decorators.http import require_http_methods
+import json
+from fcm_django.models import FCMDevice
+from django.http import HttpResponse, HttpResponseBadRequest
 
-    payload = {
-        "registration_ids" :registration_ids,
-        "priority" : "high",
-        "notification" : {
-            "body" : message_desc,
-            "title" : message_title,
-            "image" : "https://i.ytimg.com/vi/m5WUPHRgdOA/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDwz-yjKEdwxvKjwMANGk5BedCOXQ",
-            "icon": "https://yt3.ggpht.com/ytc/AKedOLSMvoy4DeAVkMSAuiuaBdIGKC7a5Ib75bKzKO3jHg=s900-c-k-c0x00ffffff-no-rj",
-            
-        }
-    }
+@csrf_exempt
+@require_http_methods(['POST'])
+def save_token(request):
 
-    result = requests.post(url,  data=json.dumps(payload), headers=headers )
-    print(result.json())
+    body_dict = json.loads(request.body.decode('utf-8'))
+    token = body_dict['token']
+    existe = FCMDevice.objects.filter(registration_id=token, active=True)
 
+    if len(existe) > 0:
+        return HttpResponseBadRequest(json.dumps ({ 'message': 'the token already exists'}))
+    
+    divice = FCMDevice()
+    divice.registration_id = token
+    divice.active= True
 
+    #solo si el usuario esta autenticado procederemos a enlazarlo
+    if request.user.is_authenticated: divice.user = request.user
 
-
-def send(request):
-    resgistration  = ['enhsXcb0AkFu2xF3T3sAcX:APA91bGr5vsfBy7Jh7iim53-Ic14_XPwrAp9PpIGLqoc18YoHflom-9KKnPjIGO1chQa1AEFKZkVsauH7Bn6-LMMJ9zQV-SP5NQKM6pDdTrjakLHHsupvcmVQQwH0GYCCJP9AT0gR2q6']
-    send_notification(resgistration , 'Code Keen added a new video' , 'Code Keen new video alert')
-    return HttpResponse("sent")
-
+    try:
+        divice.save()
+        return HttpResponse(json.dumps({ 'message': 'token guardado'}))
+    except:
+        return HttpResponseBadRequest(json.dumps({'message': 'no se ha podido guardar'}))
+    
