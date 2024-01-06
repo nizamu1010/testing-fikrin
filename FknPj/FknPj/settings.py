@@ -15,7 +15,7 @@ SECRET_KEY = "django-insecure-rsucr37x(waygjv&w@+jdp!qlu$$d&d$%@5$gbho$(#u3765)2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['16.171.140.206', 'fikr.in', 'www.fikr.in', '*']
+ALLOWED_HOSTS = ['fikr.in', 'www.fikr.in','*']
 
 
 # Application definition
@@ -66,23 +66,19 @@ WSGI_APPLICATION = "FknPj.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'fkrndb',
-#         'USER': 'postgres',
-#         'PASSWORD': 'FnKi@10$NiFk',
-#         'HOST': 'localhost',  # or the database server host
-#         'PORT': '5432',       # the default port for PostgreSQL
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fkrndb',
+        'USER': 'postgres',
+        'PASSWORD': 'FnKi@10$NiFk',
+        'HOST': 'localhost',  # or the database server host
+        'PORT': '5432',       # the default port for PostgreSQL
     }
 }
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -136,7 +132,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = '/accounts/login/'
 
 
-# ----------------------------------------------------------------------------------------------------------------
+
 
 
 
@@ -175,7 +171,7 @@ PWA_APP_LANG = 'en-US'
 FCM_DJANGO_SETTINGS = {
     "FCM_SERVER_KEY": "AAAAkV-gc5c:APA91bF4PJPVDpihuGhCzMljtG1RjI-ZOn0xLr8UscqsQGw6nPZ7mDz9ttTeXZUj6LHjT1fdwkhUEdXYa22jR-dJ-OEr3_MDwTbVNUsTB8Wofl8H8ApQ8Sbo8dkEnFNTR5OXeOIrtKTS",
     "DEFAULT_FIREBASE_APP": None,
-    "APP_VERBOSE_NAME": "Fikrin-Thoughts",
+    "APP_VERBOSE_NAME": "[My FCM Application]",
     "ONE_DEVICE_PER_USER": False,
     "DELETE_INACTIVE_DEVICES": True,
     "TOPIC_PREFIX": None,

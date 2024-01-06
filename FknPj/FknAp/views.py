@@ -13,11 +13,12 @@ from .forms import ImageForm
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here. CustomUser    profile_pic
 
-# ---------------------------------------------------------------------------------------------
+
 import requests
+from fcm_django.models import FCMDevice
 
 def send_notification(registration_ids, message_title, message_desc, post_id):
-    fcm_api = "AAAAnvinOgI:APA91bGqvTyi96rSym5-ntZqPF3cWb9IVLsYu_Vtr9YWRZUeUutCYZIUO2Y6qzu0owSUHxEQdvaTostXYYfAQpP0B5Kxxw_IHXsrwcE9LyC9_1r-d_7vB6mGjWeY-oSt7iXzCLACmc4I"
+    fcm_api = "AAAAkV-gc5c:APA91bF4PJPVDpihuGhCzMljtG1RjI-ZOn0xLr8UscqsQGw6nPZ7mDz9ttTeXZUj6LHjT1fdwkhUEdXYa22jR-dJ-OEr3_MDwTbVNUsTB8Wofl8H8ApQ8Sbo8dkEnFNTR5OXeOIrtKTS"
     url = "https://fcm.googleapis.com/fcm/send"
 
     headers = {
@@ -41,7 +42,7 @@ def send_notification(registration_ids, message_title, message_desc, post_id):
     print(result.json())
 
 
-# --------------------------------------------------------------------------------------------------------
+
 
 def home(request):
     posts = Post.objects.all().order_by('-date_created')
@@ -154,7 +155,6 @@ def create_post(request):
 
         post = Post.objects.create(creater=request.user, content_text=content_text)
 
-        # --------------------------------------
         # Get the ID of the newly created post
         post_id = post.id
 
@@ -163,7 +163,7 @@ def create_post(request):
             registration_ids = [device.registration_id for device in devices]
 
             if registration_ids:
-                message_title = request.user
+                message_title = creater
                 message_desc = content_text
                 send_notification(registration_ids, message_title, message_desc, post_id)
                 print('Notification sent to {} devices.'.format(len(registration_ids)))
@@ -175,7 +175,6 @@ def create_post(request):
         except Exception as e:
             print('An error occurred:', str(e))
 
-        # --------------------------------------
         return redirect('FknAp:home')
 
     posts = Post.objects.all()
@@ -285,12 +284,12 @@ def delete_comment(request, post_id, comment_id):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-# -----------------------------------------------------------------------------------
-    
 from django.views.decorators.http import require_http_methods
-import json
-from fcm_django.models import FCMDevice
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
+import json
+
+from fcm_django.models import FCMDevice
 
 @csrf_exempt
 @require_http_methods(['POST'])
