@@ -20,7 +20,7 @@
     {% if  not user.is_authenticated %}
     <div class="alert alert-info alert-dismissible fade show mb-0 rounded-3 shadow-sm" role="alert" style="background-color: #e6f7ff; color: #004085; border-color: #b8daff;">
        <small>Follow this for the full experience!</small>  
-        <a class="ms-3" href="{% url 'FknAp:login' %}" style="text-decoration: none; color: #0056b3; font-weight: bold;"><small>Login</small></a>
+        <a class="ms-3" href="{% url 'Authentication:login' %}" style="text-decoration: none; color: #0056b3; font-weight: bold;"><small>Login</small></a>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endif %}
@@ -35,7 +35,7 @@
             style="width: 3rem; height: 200px; position: fixed; right: 4px; margin-top: 75px;">
                 <ul class="nav nav-pills nav-flush flex-column text-center">
                     <li>
-                        <a {% if not user.is_authenticated %} href="" {% endif %} {% if user.is_authenticated %} href="{% url 'FknAp:profile' %}" {% endif %} class="nav-link py-3" aria-current="page" title="Profile" data-bs-toggle="tooltip" data-bs-placement="right">
+                        <a {% if not user.is_authenticated %} href="" {% endif %} {% if user.is_authenticated %} href="{% url 'Authentication:profile' %}" {% endif %} class="nav-link py-3" aria-current="page" title="Profile" data-bs-toggle="tooltip" data-bs-placement="right">
                             <i class="bi bi-person-circle pe-none" width="24" height="24" role="img" aria-label="Profile" style="color: #000157;"></i>
                         </a>
                     </li>

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "FknAp",
     "pwa",
     "fcm_django",
+    "Authentication",
 ]
 
 MIDDLEWARE = [
@@ -66,17 +67,24 @@ WSGI_APPLICATION = "FknPj.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'fkrndb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'FnKi@10$NiFk',
+#         'HOST': 'localhost',  
+#         'PORT': '5432',       
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fkrndb',
-        'USER': 'postgres',
-        'PASSWORD': 'FnKi@10$NiFk',
-        'HOST': 'localhost',  # or the database server host
-        'PORT': '5432',       # the default port for PostgreSQL
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 
 
@@ -98,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'FknAp.CustomUser'
+AUTH_USER_MODEL = 'Authentication.CustomUser'
 
 
 # Internationalization
@@ -130,9 +138,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 LOGIN_URL = '/accounts/login/'
-
-
-
 
 
 

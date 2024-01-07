@@ -18,7 +18,7 @@
 <section>
   <div class="container-fluid sticky-top" style="padding: 0;">
     <header class="navbar flex-md-nowrap p-0 shadow mb-0 pl-2" data-bs-theme="light" style="background-color: #000157;">  <!-- #000157 -->
-        <a class="navbar-brand fs-5 text-white pb-0" href="{% url 'FknAp:home' %}">
+        <a class="navbar-brand fs-5 text-white pb-0" href="{% url 'Authentication:home' %}">
           <i class="bi bi-house-fill px-2" style="display: block; width: 105px; height: 40px"><small class="fs-6 mx-2">Profile</small></i>
         </a>
     </header>
@@ -27,7 +27,7 @@
 <section>
 
   <div class="profile">
-    <a href="{% url 'FknAp:profile_cropping' user_id=user.id %}">
+    <a href="{% url 'Authentication:profile_cropping' user_id=user.id %}">
       
       <div class="img">
         {% if customuser.profile_pic %}<img src="{{ customuser.profile_pic.url }}"/>
@@ -44,7 +44,7 @@
       <div class="line"></div>
       <div class="stats">
         <div class="stat mt-3">
-          <a href="{% url 'FknAp:signout' %}">
+          <a href="{% url 'Authentication:signout' %}">
             <button class="btn btn-primary" style="background-color: #020481; border: 0;">Sign Out</button></a>
         </div>
       </div>
