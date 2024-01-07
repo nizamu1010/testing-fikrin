@@ -137,7 +137,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/accounts/login/'# 1 hour (adjust as needed)
 
 
 
@@ -195,7 +195,7 @@ FCM_DJANGO_SETTINGS = {
         },
         # Define more channels as needed
     },
-    "MESSAGE_TTL_SECONDS": 3600,  # 1 hour (adjust as needed)
+    "MESSAGE_TTL_SECONDS": 3600,  
     "ERRORS_KEEP_UNSENT": True,
-    "ERRORS_MAX_AGE": 604800,  # Maximum age of unsent messages (adjust as needed)
+    "ERRORS_MAX_AGE": 604800,  
 }

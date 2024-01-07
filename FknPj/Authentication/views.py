@@ -28,7 +28,7 @@ def home(request):
         except ObjectDoesNotExist:
             pass
 
-    return render(request, 'index.html', {'posts': posts,'comments':comments})
+    return render(request, 'index.html', {'posts': posts})
 
 
 
@@ -129,27 +129,64 @@ import json
 
 from fcm_django.models import FCMDevice
 
+# @csrf_exempt
+# @require_http_methods(['POST'])
+# def save_token(request):
+
+#     body_dict = json.loads(request.body.decode('utf-8'))
+#     token = body_dict['token']
+#     existe = FCMDevice.objects.filter(registration_id=token, active=True)
+
+#     if len(existe) > 0:
+#         return HttpResponseBadRequest(json.dumps ({ 'message': 'the token already exists'}))
+    
+#     divice = FCMDevice()
+#     divice.registration_id = token
+#     divice.active= True
+
+#     #solo si el usuario esta autenticado procederemos a enlazarlo
+#     if request.user.is_authenticated: divice.user = request.user
+
+#     try:
+#         divice.save()
+#         return HttpResponse(json.dumps({ 'message': 'token guardado'}))
+#     except:
+#         return HttpResponseBadRequest(json.dumps({'message': 'no se ha podido guardar'}))
+    
+import json
+import logging
+
+from django.http import HttpResponseBadRequest
+
+import json
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseServerError
+from fcm_django.models import FCMDevice
+
 @csrf_exempt
 @require_http_methods(['POST'])
 def save_token(request):
-
-    body_dict = json.loads(request.body.decode('utf-8'))
-    token = body_dict['token']
-    existe = FCMDevice.objects.filter(registration_id=token, active=True)
-
-    if len(existe) > 0:
-        return HttpResponseBadRequest(json.dumps ({ 'message': 'the token already exists'}))
-    
-    divice = FCMDevice()
-    divice.registration_id = token
-    divice.active= True
-
-    #solo si el usuario esta autenticado procederemos a enlazarlo
-    if request.user.is_authenticated: divice.user = request.user
-
     try:
-        divice.save()
-        return HttpResponse(json.dumps({ 'message': 'token saved token'}))
-    except:
-        return HttpResponseBadRequest(json.dumps({'message': 'could not be saved'}))
-    
+        body_dict = json.loads(request.body.decode('utf-8'))
+        token = body_dict.get('token')
+        
+        if token:
+            existe = FCMDevice.objects.filter(registration_id=token, active=True)
+
+            if existe.exists():
+                return JsonResponse({'message': 'The token already exists'}, status=400)
+            
+            device = FCMDevice(registration_id=token, active=True)
+            if request.user.is_authenticated:
+                device.user = request.user
+
+            device.save()
+            return JsonResponse({'message': 'Token saved successfully'})
+        else:
+            return HttpResponseBadRequest('Token not provided')
+
+    except json.JSONDecodeError:
+        return HttpResponseBadRequest('Invalid JSON format in request body')
+    except KeyError as e:
+        return HttpResponseBadRequest(f'Missing field: {e}')
+    except Exception as e:
+        return HttpResponseServerError(f'Error processing request: {str(e)}')

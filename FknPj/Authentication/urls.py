@@ -13,6 +13,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile_cropping/<int:user_id>/', views.profile_cropping, name="profile_cropping"),
 
-    path('save_token/', views.save_token, name='save_token'),
-
+    path('save-token/', views.save_token, name='save_token'),
 ]
+
+
